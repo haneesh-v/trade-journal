@@ -36,7 +36,7 @@ RUN npm install --omit=dev
 # Force reinstall Sharp with proper architecture detection
 # This will automatically detect and build for the correct platform
 RUN npm uninstall sharp && \
-    npm install sharp --build-from-source
+    npm install --platform=linuxmusl --arch=x64 sharp
 
 COPY backend/ ./
 
