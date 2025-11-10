@@ -15,17 +15,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libvips-dev \
   && rm -rf /var/lib/apt/lists/*
 
+# Prevent any npm build-from-source accidental behavior
+ENV npm_config_build_from_source=false
+ENV npm_config_production=false
+
 # copy package files first for caching
 COPY package*.json ./ 
 
-# install node-gyp globally (optional) and install deps
+# install dependencies normally (allow prebuilt sharp binaries)
 RUN npm install --no-audit --no-fund
 
 # copy rest of backend
 COPY . .
 
-# if the repo needs a build step (e.g., transpile), run it
-# change or remove if repo doesn't have build script
+# run build if present
 RUN if [ -f package.json ] && jq -e '.scripts.build' package.json >/dev/null 2>&1; then npm run build; fi
 
 EXPOSE 3000
