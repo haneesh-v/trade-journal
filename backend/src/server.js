@@ -182,6 +182,7 @@ app.use('/api/diary-templates', diaryTemplateRoutes);
 app.use('/api/health', healthRoutes);
 app.use('/api/tags', tagsRoutes);
 app.use('/api/admin/backup', backupRoutes);
+app.use('/api/playbooks', playbookRoutes);
 
 // OAuth2 Provider endpoints
 app.use('/oauth', oauth2Routes);
