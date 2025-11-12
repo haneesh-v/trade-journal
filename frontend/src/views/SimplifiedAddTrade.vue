@@ -252,7 +252,7 @@ export default {
           commission: form.value.commission || 0,
           fees: form.value.fees || 0,
           notes: form.value.notes || '',
-          instrumentType: 'futures',
+          instrumentType: 'future',
           tradeDate: form.value.entryTime.split('T')[0]
         };
     
