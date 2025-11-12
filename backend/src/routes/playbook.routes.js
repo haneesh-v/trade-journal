@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
+const { authenticate } = require('../middleware/auth');
 const db = require('../config/database');
 
 // Get all playbooks for user
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
     try {
         const playbooks = await db.query(`
             SELECT p.*, 
@@ -26,7 +26,7 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 // Get single playbook with rules
-router.get('/:id', authenticateToken, async (req, res) => {
+router.get('/:id', authenticate, async (req, res) => {
     try {
         const playbook = await db.query(`
             SELECT * FROM playbooks 
@@ -55,7 +55,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 });
 
 // Create playbook
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
     const { name, description, color, entry_rules, exit_rules } = req.body;
     
     const client = await db.pool.connect();
@@ -103,7 +103,7 @@ router.post('/', authenticateToken, async (req, res) => {
 });
 
 // Update playbook
-router.put('/:id', authenticateToken, async (req, res) => {
+router.put('/:id', authenticate, async (req, res) => {
     const { name, description, color, entry_rules, exit_rules } = req.body;
     
     const client = await db.pool.connect();
@@ -163,7 +163,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
 });
 
 // Delete playbook
-router.delete('/:id', authenticateToken, async (req, res) => {
+router.delete('/:id', authenticate, async (req, res) => {
     try {
         const result = await db.query(
             'DELETE FROM playbooks WHERE id = $1 AND user_id = $2 RETURNING id',
@@ -182,7 +182,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 });
 
 // Assign playbook to trade with rule adherence
-router.post('/assign', authenticateToken, async (req, res) => {
+router.post('/assign', authenticate, async (req, res) => {
     const { trade_id, playbook_id, rule_adherence } = req.body;
     
     const client = await db.pool.connect();
@@ -231,7 +231,7 @@ router.post('/assign', authenticateToken, async (req, res) => {
 });
 
 // Get playbook analytics
-router.get('/:id/analytics', authenticateToken, async (req, res) => {
+router.get('/:id/analytics', authenticate, async (req, res) => {
     try {
         const analytics = await db.query(`
             SELECT 
