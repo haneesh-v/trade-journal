@@ -238,37 +238,42 @@ export default {
     const saveTrade = async () => {
       loading.value = true;
       try {
-        // Format data for backend (use camelCase as expected by backend)
+        // Extract trade_date from entryTime
+        const tradeDate = form.value.entryTime.split('T')[0];
+        
+        // Format data for backend (use snake_case as expected by database)
         const payload = {
           symbol: form.value.symbol,
           side: form.value.side,
           quantity: form.value.quantity,
-          entryPrice: form.value.entryPrice,
-          exitPrice: form.value.exitPrice || null,
-          entryTime: form.value.entryTime,
-          exitTime: form.value.exitTime || null,
-          stopLoss: form.value.stopLoss || null,
-          takeProfit: form.value.takeProfit || null,
+          entry_price: form.value.entryPrice,
+          entry_time: form.value.entryTime,
+          trade_date: tradeDate, // Required field!
           commission: form.value.commission || 0,
           fees: form.value.fees || 0,
           notes: form.value.notes || '',
-          instrumentType: 'future'
-          // tradeDate removed - backend extracts it from entryTime
+          instrument_type: 'future'
         };
     
-        // Calculate P&L if exit price exists
+        // Only include exit data if exit price is provided
         if (form.value.exitPrice) {
-          const spec = contractSpecs[form.value.symbol];
-          if (spec) {
-            const priceDiff = form.value.side === 'long'
-              ? (form.value.exitPrice - form.value.entryPrice)
-              : (form.value.entryPrice - form.value.exitPrice);
-            
-            const grossPnL = priceDiff * spec.pointValue * form.value.quantity;
-            payload.pnl = grossPnL - payload.commission - payload.fees;
-            payload.pnlPercent = (payload.pnl / (form.value.entryPrice * spec.pointValue * form.value.quantity)) * 100;
-          }
+          payload.exit_price = form.value.exitPrice;
         }
+        
+        if (form.value.exitTime) {
+          payload.exit_time = form.value.exitTime;
+        }
+    
+        // Include stop loss and take profit if provided (store in notes or separate fields)
+        if (form.value.stopLoss) {
+          payload.stop_loss = form.value.stopLoss;
+        }
+        
+        if (form.value.takeProfit) {
+          payload.take_profit = form.value.takeProfit;
+        }
+    
+        // DO NOT send pnl or pnlPercent - backend will calculate them
     
         if (isEditing.value) {
           await api.put(`/trades/${route.params.id}`, payload);
@@ -279,7 +284,8 @@ export default {
         router.push('/trades');
       } catch (error) {
         console.error('Error saving trade:', error);
-        alert('Failed to save trade: ' + (error.response?.data?.error || error.message));
+        const errorMsg = error.response?.data?.details || error.response?.data?.error || error.message;
+        alert('Failed to save trade: ' + errorMsg);
       } finally {
         loading.value = false;
       }
