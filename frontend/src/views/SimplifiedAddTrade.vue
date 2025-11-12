@@ -235,41 +235,51 @@ export default {
       return netPnL;
     });
 
-    const saveTrade = async () => {
+        const saveTrade = async () => {
       loading.value = true;
       try {
         // Extract trade_date from entryTime
         const tradeDate = form.value.entryTime.split('T')[0];
         
-        // Format data for backend (use snake_case as expected by database)
+        // Format data for backend (send BOTH camelCase and snake_case for compatibility)
         const payload = {
           symbol: form.value.symbol,
           side: form.value.side,
           quantity: form.value.quantity,
+          // CamelCase for validation
+          entryPrice: form.value.entryPrice,
+          entryTime: form.value.entryTime,
+          tradeDate: tradeDate,
+          // Snake_case for database
           entry_price: form.value.entryPrice,
           entry_time: form.value.entryTime,
-          trade_date: tradeDate, // Required field!
+          trade_date: tradeDate,
           commission: form.value.commission || 0,
           fees: form.value.fees || 0,
           notes: form.value.notes || '',
+          instrumentType: 'future',
           instrument_type: 'future'
         };
     
         // Only include exit data if exit price is provided
         if (form.value.exitPrice) {
+          payload.exitPrice = form.value.exitPrice;
           payload.exit_price = form.value.exitPrice;
         }
         
         if (form.value.exitTime) {
+          payload.exitTime = form.value.exitTime;
           payload.exit_time = form.value.exitTime;
         }
     
-        // Include stop loss and take profit if provided (store in notes or separate fields)
+        // Include stop loss and take profit if provided
         if (form.value.stopLoss) {
+          payload.stopLoss = form.value.stopLoss;
           payload.stop_loss = form.value.stopLoss;
         }
         
         if (form.value.takeProfit) {
+          payload.takeProfit = form.value.takeProfit;
           payload.take_profit = form.value.takeProfit;
         }
     
