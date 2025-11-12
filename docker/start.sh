@@ -4,8 +4,6 @@
 inject_analytics() {
     if [ -n "$VITE_ANALYTICS_DOMAIN" ] && [ -n "$VITE_ANALYTICS_SITE_ID" ]; then
         echo "Injecting analytics script: $VITE_ANALYTICS_DOMAIN with site ID $VITE_ANALYTICS_SITE_ID"
-        
-        # Find all HTML files and inject analytics script
         find /usr/share/nginx/html -name "*.html" -type f | while read file; do
             if ! grep -q "data-site-id=\"$VITE_ANALYTICS_SITE_ID\"" "$file"; then
                 sed -i "s|</head>|    <script src=\"$VITE_ANALYTICS_DOMAIN/api/script.js\" data-site-id=\"$VITE_ANALYTICS_SITE_ID\" defer></script>\n  </head>|g" "$file"
@@ -17,10 +15,10 @@ inject_analytics() {
     fi
 }
 
-# Inject analytics script at startup
+# Inject analytics
 inject_analytics
 
-# Wait for database to be ready
+# Wait for database
 echo "[WAIT] Waiting for database connection..."
 until nc -z "${DB_HOST:-postgres}" "${DB_PORT:-5432}"; do
   echo "   Database not ready, waiting..."
@@ -28,15 +26,10 @@ until nc -z "${DB_HOST:-postgres}" "${DB_PORT:-5432}"; do
 done
 echo "[OK] Database connection established"
 
-# Set environment variables for mobile support
-export RUN_MIGRATIONS="${RUN_MIGRATIONS:-true}"
+# Start Nginx in background
+echo "[START] Starting Nginx..."
+nginx
 
-# Start backend (migrations will run automatically)
+# Start backend
 echo "[START] Starting TradeTally backend..."
-cd /app/backend && node src/server.js &
-
-# Wait for backend to start
-sleep 5
-
-# Start nginx
-nginx -g "daemon off;"
+cd /app/backend && exec node src/server.js
