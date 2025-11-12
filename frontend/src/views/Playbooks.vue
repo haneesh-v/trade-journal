@@ -184,7 +184,7 @@ export default {
 
     const fetchPlaybooks = async () => {
       try {
-        const response = await api.get('/api/playbooks');
+        const response = await api.get('/playbooks');
         playbooks.value = response.data;
       } catch (error) {
         console.error('Error fetching playbooks:', error);
@@ -210,7 +210,7 @@ export default {
         isEditing.value = true;
         currentPlaybookId.value = playbook.id;
         
-        const response = await api.get(`/api/playbooks/${playbook.id}`);
+        const response = await api.get(`/playbooks/${playbook.id}`);
         const data = response.data;
         
         form.value = {
@@ -275,9 +275,9 @@ export default {
         };
 
         if (isEditing.value) {
-          await api.put(`/api/playbooks/${currentPlaybookId.value}`, payload);
+          await api.put(`/playbooks/${currentPlaybookId.value}`, payload);
         } else {
-          await api.post('/api/playbooks', payload);
+          await api.post('/playbooks', payload);
         }
 
         await fetchPlaybooks();
@@ -297,7 +297,7 @@ export default {
 
       loading.value = true;
       try {
-        await api.delete(`/api/playbooks/${currentPlaybookId.value}`);
+        await api.delete(`/playbooks/${currentPlaybookId.value}`);
         await fetchPlaybooks();
         closeModal();
       } catch (error) {
