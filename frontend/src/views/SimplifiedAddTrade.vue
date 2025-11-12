@@ -238,24 +238,24 @@ export default {
     const saveTrade = async () => {
       loading.value = true;
       try {
-        // Format data for backend
+        // Format data for backend (use camelCase as expected by backend)
         const payload = {
           symbol: form.value.symbol,
           side: form.value.side,
           quantity: form.value.quantity,
-          entry_price: form.value.entryPrice,
-          exit_price: form.value.exitPrice || null,
-          entry_time: form.value.entryTime,
-          exit_time: form.value.exitTime || null,
-          stop_loss: form.value.stopLoss || null,
-          take_profit: form.value.takeProfit || null,
+          entryPrice: form.value.entryPrice,
+          exitPrice: form.value.exitPrice || null,
+          entryTime: form.value.entryTime,
+          exitTime: form.value.exitTime || null,
+          stopLoss: form.value.stopLoss || null,
+          takeProfit: form.value.takeProfit || null,
           commission: form.value.commission || 0,
           fees: form.value.fees || 0,
           notes: form.value.notes || '',
-          instrument_type: 'futures',
-          trade_date: form.value.entryTime.split('T')[0]
+          instrumentType: 'futures',
+          tradeDate: form.value.entryTime.split('T')[0]
         };
-
+    
         // Calculate P&L if exit price exists
         if (form.value.exitPrice) {
           const spec = contractSpecs[form.value.symbol];
@@ -266,16 +266,16 @@ export default {
             
             const grossPnL = priceDiff * spec.pointValue * form.value.quantity;
             payload.pnl = grossPnL - payload.commission - payload.fees;
-            payload.pnl_percent = (payload.pnl / (form.value.entryPrice * spec.pointValue * form.value.quantity)) * 100;
+            payload.pnlPercent = (payload.pnl / (form.value.entryPrice * spec.pointValue * form.value.quantity)) * 100;
           }
         }
-
+    
         if (isEditing.value) {
           await api.put(`/trades/${route.params.id}`, payload);
         } else {
           await api.post('/trades', payload);
         }
-
+    
         router.push('/trades');
       } catch (error) {
         console.error('Error saving trade:', error);
