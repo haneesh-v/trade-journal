@@ -282,6 +282,7 @@ const baseNavigation = [
     ]
   },
   { name: 'Trades', to: '/trades', route: 'trades' },
+  { name: 'Playbooks', to: '/playbooks', route: 'Playbooks' },
   {
     name: 'Analytics',
     type: 'dropdown',
