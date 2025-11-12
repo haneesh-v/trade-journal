@@ -178,6 +178,12 @@ const router = createRouter({
       component: () => import('@/views/OAuth/AuthorizeView.vue')
     },
     {
+      path: '/playbooks',
+      name: 'Playbooks',
+      component: () => import('@/views/Playbooks.vue'),
+      meta: { requiresAuth: true }
+    }
+    {
       path: '/pricing',
       name: 'pricing',
       component: () => import('@/views/PricingView.vue')
