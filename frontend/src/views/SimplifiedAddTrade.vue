@@ -252,8 +252,8 @@ export default {
           commission: form.value.commission || 0,
           fees: form.value.fees || 0,
           notes: form.value.notes || '',
-          instrumentType: 'future',
-          tradeDate: form.value.entryTime.split('T')[0]
+          instrumentType: 'future'
+          // tradeDate removed - backend extracts it from entryTime
         };
     
         // Calculate P&L if exit price exists
