@@ -38,6 +38,7 @@ const healthRoutes = require('./routes/health.routes');
 const oauth2Routes = require('./routes/oauth2.routes');
 const tagsRoutes = require('./routes/tags.routes');
 const backupRoutes = require('./routes/backup.routes');
+const playbookRoutes = require('./routes/playbook.routes');
 const BillingService = require('./services/billingService');
 const priceMonitoringService = require('./services/priceMonitoringService');
 const backupScheduler = require('./services/backupScheduler.service');
