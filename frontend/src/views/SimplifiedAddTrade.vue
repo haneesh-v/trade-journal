@@ -238,44 +238,35 @@ export default {
         const saveTrade = async () => {
           loading.value = true;
           try {
-            // Format data for backend (send BOTH camelCase and snake_case for compatibility)
+            // Format data for backend (use camelCase - backend converts to snake_case internally)
             const payload = {
               symbol: form.value.symbol,
               side: form.value.side,
               quantity: form.value.quantity,
-              // CamelCase for validation
               entryPrice: form.value.entryPrice,
               entryTime: form.value.entryTime,
-              // Snake_case for database
-              entry_price: form.value.entryPrice,
-              entry_time: form.value.entryTime,
               commission: form.value.commission || 0,
               fees: form.value.fees || 0,
               notes: form.value.notes || '',
-              instrumentType: 'future',
-              instrument_type: 'future'
+              instrumentType: 'future'
             };
         
             // Only include exit data if exit price is provided
             if (form.value.exitPrice) {
               payload.exitPrice = form.value.exitPrice;
-              payload.exit_price = form.value.exitPrice;
             }
             
             if (form.value.exitTime) {
               payload.exitTime = form.value.exitTime;
-              payload.exit_time = form.value.exitTime;
             }
         
             // Include stop loss and take profit if provided
             if (form.value.stopLoss) {
               payload.stopLoss = form.value.stopLoss;
-              payload.stop_loss = form.value.stopLoss;
             }
             
             if (form.value.takeProfit) {
               payload.takeProfit = form.value.takeProfit;
-              payload.take_profit = form.value.takeProfit;
             }
         
             // DO NOT send pnl or pnlPercent - backend will calculate them
@@ -294,7 +285,7 @@ export default {
           } finally {
             loading.value = false;
           }
-        };
+};
 
     const cancel = () => {
       router.push('/trades');
