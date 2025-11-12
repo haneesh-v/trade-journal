@@ -55,7 +55,7 @@ const router = createRouter({
     {
       path: '/trades/new',
       name: 'trade-create',
-      component: () => import('@/views/trades/TradeFormView.vue'),
+      component: () => import('@/views/SimplifiedAddTrade.vue'),
       meta: { requiresAuth: true }
     },
     {
@@ -67,7 +67,7 @@ const router = createRouter({
     {
       path: '/trades/:id/edit',
       name: 'trade-edit',
-      component: () => import('@/views/trades/TradeFormView.vue'),
+      component: () => import('@/views/SimplifiedAddTrade.vue'),
       meta: { requiresAuth: true }
     },
     {
